@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test'
 import path from 'path'
-import UploadComponent from '../pages/component/upload.compononent'
+import UploadComponent from '../pages/component/upload.component'
 
 test.describe('Upload File', () => {
     let upload: UploadComponent
@@ -33,7 +33,7 @@ test.describe('Upload File', () => {
             if (input) input.className = ''
         })
 
-        await page.setInputFiles(upload.uploadInput, filePath)
+        await upload.uploadInput.setInputFiles(filePath)
         await upload.submitBtn.click()
 
         // verify the plugin's success message, e.g. "File test_image.png uploaded successfully"

@@ -1,8 +1,8 @@
 # playwright-web-framework
 
 End-to-end UI tests written with [Playwright](https://playwright.dev/) (TypeScript) against the
-[SDET Unicorns practice site](https://practice.sdetunicorns.com). Tests run across Chromium,
-Firefox, and WebKit, follow the **Page Object Model**, generate data with [Faker](https://fakerjs.dev/),
+[SDET Unicorns practice site](https://practice.sdetunicorns.com). Tests run across Chromium and
+Firefox (WebKit is configured but commented out), follow the **Page Object Model**, generate data with [Faker](https://fakerjs.dev/),
 and report through the Playwright HTML report and [Allure](https://allurereport.org/).
 
 [![Playwright Tests](https://github.com/sharisroy/playwright-web-framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/sharisroy/playwright-web-framework/actions/workflows/playwright.yml)
@@ -56,9 +56,9 @@ tests/                       the specs
   wait.spec.ts               wait strategies: hard / condition / assertion
   account.spec.ts            login + access Orders/Downloads
 pages/                       Page Objects, one per page
-  home.page.ts, blog.page.ts, contact.page.ts, cart.page.ts
+  home.page.ts, blog.page.ts, contact.page.ts
   component/                 reusable widgets shared across pages
-    upload.compononent.ts
+    upload.component.ts
 config/
   credentials.ts             login credentials read by the account tests
 test-data/                   static fixtures (test_image.png, 5MB_sample_file.pdf)
@@ -100,7 +100,7 @@ against a slow, shared, live site:
 ## Continuous Integration
 
 [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) runs the full suite on every
-push and pull request to `main`/`master` (Node LTS, all three browsers). The config is CI-aware via
+push and pull request to `main`/`master` (Node LTS, Chromium and Firefox). The config is CI-aware via
 `process.env.CI` — retries, a single worker, and headless Chromium turn on automatically.
 
 On pushes to the default branch the workflow builds the **Allure report (with history)** and publishes

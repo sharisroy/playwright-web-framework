@@ -5,6 +5,8 @@ End-to-end UI tests written with [Playwright](https://playwright.dev/) (TypeScri
 Firefox, and WebKit, follow the **Page Object Model**, generate data with [Faker](https://fakerjs.dev/),
 and report through the Playwright HTML report and [Allure](https://allurereport.org/).
 
+[![Playwright Tests](https://github.com/sharisroy/playwright-web-framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/sharisroy/playwright-web-framework/actions/workflows/playwright.yml)
+
 ## Prerequisites
 
 - Node.js 18+
@@ -62,6 +64,8 @@ config/
 test-data/                   static fixtures (test_image.png, 5MB_sample_file.pdf)
 playwright.config.ts
 tsconfig.json
+.github/workflows/
+  playwright.yml             CI: runs the suite and publishes the Allure report
 ```
 
 ## How it's organized
@@ -92,3 +96,18 @@ against a slow, shared, live site:
 - **`trace: 'on'`** — a trace is recorded for every test and attached to the Allure report;
   open it with the Playwright trace viewer.
 - **`reporter: [['html'], ['allure-playwright']]`** — both the built-in HTML report and Allure.
+
+## Continuous Integration
+
+[`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) runs the full suite on every
+push and pull request to `main`/`master` (Node LTS, all three browsers). The config is CI-aware via
+`process.env.CI` — retries, a single worker, and headless Chromium turn on automatically.
+
+On pushes to the default branch the workflow builds the **Allure report (with history)** and publishes
+it to **GitHub Pages**, so every run updates a browsable report with trend graphs:
+
+- Report: <https://sharisroy.github.io/playwright-web-framework/>
+- The Playwright HTML report is also uploaded as a downloadable artifact on every run.
+
+One-time setup: after the first run creates the `gh-pages` branch, enable
+**Settings → Pages → Source: `gh-pages` branch**.

@@ -45,7 +45,8 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], headless: false },
+      // headed locally so you can watch the run; headless in CI (no display server there)
+      use: { ...devices['Desktop Chrome'], headless: !!process.env.CI },
     },
 
     // {

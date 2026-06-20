@@ -109,5 +109,5 @@ it to **GitHub Pages**, so every run updates a browsable report with trend graph
 - Report: <https://sharisroy.github.io/playwright-web-framework/>
 - The Playwright HTML report is also uploaded as a downloadable artifact on every run.
 
-One-time setup: after the first run creates the `gh-pages` branch, enable
-**Settings → Pages → Source: `gh-pages` branch**.
+One-time setup: enable **Settings → Pages → Source: GitHub Actions** (no separate branch needed —
+the workflow deploys the report directly).

@@ -1,8 +1,9 @@
 # playwright-web-framework
 
-End-to-end UI tests written with [Playwright](https://playwright.dev/) against the
-[SDET Unicorns practice site](https://practice.sdetunicorns.com). Tests run across
-Chromium, Firefox, and WebKit.
+End-to-end UI tests written with [Playwright](https://playwright.dev/) (TypeScript) against the
+[SDET Unicorns practice site](https://practice.sdetunicorns.com). Tests run across Chromium,
+Firefox, and WebKit, follow the **Page Object Model**, generate data with [Faker](https://fakerjs.dev/),
+and report through the Playwright HTML report and [Allure](https://allurereport.org/).
 
 ## Prerequisites
 
@@ -19,35 +20,75 @@ npx playwright install        # download the browser binaries
 ## Running the tests
 
 ```bash
-npx playwright test                      # all tests, all browsers
+npm test                                 # all tests, all browsers
 npx playwright test --project=chromium   # a single browser
 npx playwright test home.spec.ts         # a single file
-npx playwright test home.spec.ts:31      # a single test (by line number)
+npx playwright test -g "Access Orders"   # tests matching a title
 npx playwright test --ui                 # interactive UI mode
-npx playwright show-report               # open the last HTML report
+npm run report                           # open the last HTML report
 ```
+
+## Allure report
+
+Every test runs with `trace: 'on'`, so the Playwright **trace is attached to each test** in the
+Allure results (`allure-results/`). Generate and open the report:
+
+```bash
+npm run allure:serve       # build a temporary report and open it (quickest)
+# or, for a persistent report:
+npm run allure:generate    # build allure-report/ from allure-results/
+npm run allure:open        # open the generated report
+```
+
+Each test's **trace.zip is attached** — download it and open with
+`npx playwright show-trace <trace.zip>` to step through the run (DOM snapshots, network, console).
 
 ## Project layout
 
 ```
-tests/
-  home.spec.ts      navigation, titles, nav links
-  blog.spec.ts      recent-posts widget
-  contact.spec.ts   contact form submission + soft assertions
+tests/                       the specs
+  home.spec.ts               navigation, titles, nav links, get-started
+  blog.spec.ts               recent-posts widget
+  contact.spec.ts            contact form (Faker data) + soft assertions
+  upload_files.spec.ts       file upload (two techniques) via a component
+  wait.spec.ts               wait strategies: hard / condition / assertion
+  account.spec.ts            login + access Orders/Downloads
+pages/                       Page Objects, one per page
+  home.page.ts, blog.page.ts, contact.page.ts, cart.page.ts
+  component/                 reusable widgets shared across pages
+    upload.compononent.ts
+config/
+  credentials.ts             login credentials read by the account tests
+test-data/                   static fixtures (test_image.png, 5MB_sample_file.pdf)
 playwright.config.ts
+tsconfig.json
 ```
+
+## How it's organized
+
+- **Page Object Model** — each page's selectors and actions live in a class under `pages/`
+  (e.g. `HomePage.navigate()`, `ContactPage.fillForm(...)`). Specs read at the behavior level
+  and the selectors live in one place.
+- **Components** — reusable widgets that appear across pages live in `pages/component/`
+  (e.g. `UploadComponent.uploadFile(...)` encapsulates the file-upload flow).
+- **Test data** — random data is generated with Faker (see `contact.spec.ts`); shared values
+  like login credentials live in `config/credentials.ts`.
+- **Setup hooks** — each spec uses `test.beforeEach` to construct its page object and navigate,
+  so tests start from a clean, prepared state.
 
 ## Configuration notes
 
 These settings in [`playwright.config.ts`](playwright.config.ts) keep the suite stable
 against a slow, shared, live site:
 
-- **`navigationTimeout: 60_000`** — the live site is slow to fire its `load` event;
-  the default 30s `goto` timeout caused intermittent failures.
-- **`timeout: 90_000`** — the per-test timeout, raised above the default 30s so the
-  longer `navigationTimeout` can actually take effect (a 30s test timeout would cut a
-  slow navigation off first).
-- **`retries: process.env.CI ? 2 : 1`** — one local retry absorbs the site's occasional
-  slow loads so a transient blip doesn't fail the run.
-- **`trace: 'on-first-retry'`** — a trace is captured when a test is retried; open it
-  with `npx playwright show-report`.
+- **`baseURL: 'https://practice.sdetunicorns.com'`** — tests and page objects navigate with
+  relative paths (`page.goto('/cart')`, `homePage.navigate('/about')`), so the host lives in one place.
+- **`navigationTimeout: 60_000`** — the live site is slow to fire its `load` event; the default
+  30s `goto` timeout caused intermittent failures.
+- **`timeout: 90_000`** — the per-test timeout, raised above the default 30s so the longer
+  `navigationTimeout` can actually take effect (a 30s test timeout would cut a slow navigation off first).
+- **`retries: process.env.CI ? 2 : 1`** — one local retry absorbs the site's occasional slow
+  loads so a transient blip doesn't fail the run.
+- **`trace: 'on'`** — a trace is recorded for every test and attached to the Allure report;
+  open it with the Playwright trace viewer.
+- **`reporter: [['html'], ['allure-playwright']]`** — both the built-in HTML report and Allure.

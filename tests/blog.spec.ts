@@ -2,10 +2,14 @@ import {test, expect} from '@playwright/test'
 import BlogPage from '../pages/blog.page'
 
 test.describe('Blog', () => {
-    test('Verify the recent posts count and each title length', async ({page}) => {
-        const blog = new BlogPage(page)
-        await blog.navigate()
+    let blog: BlogPage
 
+    test.beforeEach(async ({page}) => {
+        blog = new BlogPage(page)
+        await blog.navigate()
+    })
+
+    test('Verify the recent posts count and each title length', async () => {
         // assert there are exactly 5 recent posts
         expect(await blog.getRecentPostCount()).toEqual(5)
 

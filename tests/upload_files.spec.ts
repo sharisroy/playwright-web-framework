@@ -3,12 +3,15 @@ import path from 'path'
 import UploadComponent from '../pages/component/upload.compononent'
 
 test.describe('Upload File', () => {
-    test('Should upload a file and verify the success message', async ({page}) => {
-        const upload = new UploadComponent(page)
+    let upload: UploadComponent
 
+    test.beforeEach(async ({page}) => {
+        upload = new UploadComponent(page)
         // open the cart page, which hosts the file upload form
-        await page.goto('https://practice.sdetunicorns.com/cart')
+        await page.goto('/cart')
+    })
 
+    test('Should upload a file and verify the success message', async () => {
         // resolve the path to the test image: <project>/test-data/test_image.png
         const filePath = path.join(__dirname, '../test-data/test_image.png')
 
@@ -20,11 +23,6 @@ test.describe('Upload File', () => {
     })
 
     test('Should upload a file on hidden input field and verify the success message', async ({page}) => {
-        const upload = new UploadComponent(page)
-
-        // open the cart page, which hosts the file upload form
-        await page.goto('https://practice.sdetunicorns.com/cart')
-
         // resolve the path to the test image: <project>/test-data/test_image.png
         const filePath = path.join(__dirname, '../test-data/test_image.png')
 

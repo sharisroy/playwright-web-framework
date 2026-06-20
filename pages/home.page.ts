@@ -17,8 +17,8 @@ class HomePage {
         this.navLinks = page.locator('#zak-primary-menu li[id*=menu]')
     }
 
-    async navigate(path = '') {
-        await this.page.goto('https://practice.sdetunicorns.com' + path)
+    async navigate(path = '/') {
+        await this.page.goto(path)
     }
 
     getNavLinksText() {

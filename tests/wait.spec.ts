@@ -2,10 +2,12 @@ import {test, expect} from '@playwright/test'
 import path from 'path'
 
 test.describe('Waits: hard-coded, condition, and assertion', () => {
-    test('Should wait for a large file upload to finish, then verify the success message', async ({page}) => {
+    test.beforeEach(async ({page}) => {
         // open the cart page, which hosts the file upload form
-        await page.goto('https://practice.sdetunicorns.com/cart')
+        await page.goto('/cart')
+    })
 
+    test('Should wait for a large file upload to finish, then verify the success message', async ({page}) => {
         // resolve the path to the 5MB sample file: <project>/test-data/5MB_sample_file.pdf
         const filePath = path.join(__dirname, '../test-data/5MB_sample_file.pdf')
 

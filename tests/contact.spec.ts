@@ -1,13 +1,24 @@
 import {test, expect} from '@playwright/test'
+import {faker} from '@faker-js/faker'
 import ContactPage from '../pages/contact.page'
 
 test.describe('Contact', () => {
-    test("Fill contact form and verify success message", async ({page}) => {
-        const contact = new ContactPage(page)
-        await contact.navigate()
+    let contact: ContactPage
 
-        // fill out the input fields
-        await contact.fillForm('Test name', 'test@mail.com', '1234567890', 'This is a test message')
+    test.beforeEach(async ({page}) => {
+        contact = new ContactPage(page)
+        await contact.navigate()
+    })
+
+    test("Fill contact form and verify success message", async () => {
+        // generate random test data for this run
+        const name = faker.person.fullName()
+        const email = faker.internet.email()
+        const phone = faker.string.numeric(10)
+        const message = faker.lorem.sentence()
+
+        // fill out the input fields with the generated data
+        await contact.fillForm(name, email, phone, message)
 
         // example soft assertion: it records a failure but does NOT stop the test.
         // this one is intentionally wrong — uncomment it to see the failure collected below.

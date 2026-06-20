@@ -6,11 +6,10 @@ test.describe("Home", () => {
 
     test.beforeEach(async ({page}) => {
         homePage = new HomePage(page);
+        await homePage.navigate();
     });
 
     test("Open the Homepage and shows the correct title", async ({page}) => {
-        await homePage.navigate()
-
         await expect(page).toHaveTitle("Practice E-Commerce Site – SDET Unicorns")
     })
 
@@ -21,31 +20,23 @@ test.describe("Home", () => {
     })
 
     test("Click Get Started button with CSS Selector", async ({page}) => {
-        await homePage.navigate()
-
         await homePage.getStartedBtn.click()
         await expect(page).toHaveURL(/.*#get-started/)
     })
 
     test("Verify heading text is visible using text selector", async ({page}) => {
-        await homePage.navigate()
-
         const headingText = page.locator('text=Think different. Make different.')
         await expect(headingText).toBeVisible();
         await expect(headingText).not.toBeHidden()
     })
 
     test("Verify Home link is visible using text and css selector", async ({page}) => {
-        await homePage.navigate()
-
         // the Home link inside the primary menu (#zak-primary-menu >> text=Home)
         const homeLink = page.locator('#zak-primary-menu >> text=Home')
         await expect(homeLink).toBeVisible()
     })
 
     test("Verify text of all nav links", async () => {
-        await homePage.navigate()
-
         const expectedLinks = ["Home", "About", "Shop", "Blog", "Contact", "My account"]
 
         // getNavLinksText() returns the link texts as a string[], so compare with toEqual

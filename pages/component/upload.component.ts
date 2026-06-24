@@ -20,6 +20,18 @@ class UploadComponent {
         await this.submitBtn.evaluate(el => { (el as HTMLInputElement).disabled = false; });
         await this.submitBtn.click();
     }
+
+    async unhideInput() {
+        // alternative to force-enabling the submit button: un-hide the input so the
+        // plugin enables the upload button itself
+        await this.uploadInput.evaluate(el => { (el as HTMLElement).className = ''; });
+    }
+
+    async uploadFileViaUnhide(filePath: string) {
+        await this.unhideInput();
+        await this.uploadInput.setInputFiles(filePath);
+        await this.submitBtn.click();
+    }
 }
 
 export default UploadComponent;

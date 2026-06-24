@@ -24,16 +24,14 @@ test.describe("Home", () => {
         await expect(page).toHaveURL(/.*#get-started/)
     })
 
-    test("Verify heading text is visible using text selector", async ({page}) => {
-        const headingText = page.locator('text=Think different. Make different.')
-        await expect(headingText).toBeVisible();
-        await expect(headingText).not.toBeHidden()
+    test("Verify heading text is visible using text selector", async () => {
+        await expect(homePage.heading).toBeVisible();
+        await expect(homePage.heading).not.toBeHidden()
     })
 
-    test("Verify Home link is visible using text and css selector", async ({page}) => {
+    test("Verify Home link is visible using text and css selector", async () => {
         // the Home link inside the primary menu (#zak-primary-menu >> text=Home)
-        const homeLink = page.locator('#zak-primary-menu >> text=Home')
-        await expect(homeLink).toBeVisible()
+        await expect(homePage.homeLink).toBeVisible()
     })
 
     test("Verify text of all nav links", async () => {

@@ -56,7 +56,8 @@ tests/                       the specs
   wait.spec.ts               wait strategies: hard / condition / assertion
   account.spec.ts            login + access Orders/Downloads
 pages/                       Page Objects, one per page
-  home.page.ts, blog.page.ts, contact.page.ts
+  base.page.ts               shared base class (page wiring + default navigate())
+  home.page.ts, blog.page.ts, contact.page.ts, account.page.ts
   component/                 reusable widgets shared across pages
     upload.component.ts
 config/
@@ -72,7 +73,10 @@ tsconfig.json
 
 - **Page Object Model** — each page's selectors and actions live in a class under `pages/`
   (e.g. `HomePage.navigate()`, `ContactPage.fillForm(...)`). Specs read at the behavior level
-  and the selectors live in one place.
+  and the selectors live in one place; no spec calls `page.locator(...)` directly.
+- **BasePage** — `HomePage`, `BlogPage`, `ContactPage`, and `AccountPage` extend `pages/base.page.ts`,
+  which holds the shared `page` field and a default `navigate(path)`. Pages with a fixed path
+  (e.g. `/blog`) override `navigate()` to call `super.navigate('/blog')`.
 - **Components** — reusable widgets that appear across pages live in `pages/component/`
   (e.g. `UploadComponent.uploadFile(...)` encapsulates the file-upload flow).
 - **Test data** — random data is generated with Faker (see `contact.spec.ts`); shared values

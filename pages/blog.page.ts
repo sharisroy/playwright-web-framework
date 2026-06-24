@@ -1,16 +1,16 @@
 import {Page, Locator} from '@playwright/test'
+import BasePage from './base.page'
 
-class BlogPage {
-    readonly page: Page
+class BlogPage extends BasePage {
     readonly recentPosts: Locator
 
     constructor(page: Page) {
-        this.page = page
+        super(page)
         this.recentPosts = page.locator('#recent-posts-3 ul li')
     }
 
     async navigate() {
-        await this.page.goto('/blog')
+        await super.navigate('/blog')
     }
 
     getRecentPostCount() {

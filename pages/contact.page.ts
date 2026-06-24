@@ -1,7 +1,7 @@
 import {Page, Locator} from '@playwright/test'
+import BasePage from './base.page'
 
-class ContactPage {
-    readonly page: Page
+class ContactPage extends BasePage {
     readonly nameInput: Locator
     readonly emailInput: Locator
     readonly phoneInput: Locator
@@ -10,7 +10,7 @@ class ContactPage {
     readonly successMessage: Locator
 
     constructor(page: Page) {
-        this.page = page
+        super(page)
         this.nameInput = page.locator('.contact-name input')
         this.emailInput = page.locator('.contact-email input')
         this.phoneInput = page.locator('.contact-phone input')
@@ -20,7 +20,7 @@ class ContactPage {
     }
 
     async navigate() {
-        await this.page.goto('/contact')
+        await super.navigate('/contact')
     }
 
     async fillForm(name: string, email: string, phone: string, message: string) {
